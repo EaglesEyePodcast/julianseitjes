@@ -15,7 +15,7 @@ define('PRIJS_VERKOOP', 3.30);
 define('PRIJS_INKOOP', 2.30);
 
 // Email notificatie configuratie
-define('JULIAN_EMAIL', 'julian@example.com'); // Vul in: echt emailadres van Julian
+define('JULIAN_EMAIL', 'julian.kunkeler@icloud.com'); // Julian's echte emailadres
 define('EMAIL_FROM', 'no-reply@eitjes.kunkeler.net');
 define('EMAIL_SUBJECT_PREFIX', '[Julian\'s Eitjes] ');
 
