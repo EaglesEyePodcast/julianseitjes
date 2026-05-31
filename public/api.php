@@ -142,9 +142,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(array('ok' => true));
         exit;
     }
+
+    if ($action === 'register') {
+        $naam    = trim($data['naam'] ?? '');
+        $straat  = trim($data['straat'] ?? '');
+        $huisnr  = trim($data['huisnummer'] ?? '');
+        $tel     = trim($data['telefoon'] ?? '');
+        $email   = trim($data['email'] ?? '');
+        $dozen   = (int)($data['aantal_dozen'] ?? 1);
+        $freq    = $data['frequentie'] ?? 'wekelijks';
+        
+        // Validatie
+        if (!$naam || !$straat || !$huisnr || !$tel || $dozen < 1) {
+            echo json_encode(array('error' => 'Vul alle verplichte velden in'));
+            exit;
+        }
+        
+        // Check of straat geldig is
+        $stmtStraat = $db->prepare("SELECT id FROM straten WHERE naam = ? AND actief = 1");
+        $stmtStraat->execute(array($straat));
+        if (!$stmtStraat->fetch()) {
+            echo json_encode(array('error' => 'Deze straat is helaas niet in ons leveringsgebied'));
+            exit;
+        }
+        
+        // Registratie opslaan
+        $stmt = $db->prepare("INSERT INTO registraties (naam, straat, huisnummer, telefoon, email, aantal_dozen, frequentie, startweek, status) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->execute(array($naam, $straat, $huisnr, $tel, $email, $dozen, $freq, (int)date('W')));
+        $registratieId = $db->lastInsertId();
+        
+        // WhatsApp notification naar Julian
+        $bericht = "🔔 Nieuwe inschrijving!\n\n" .
+                   "Naam: $naam\n" .
+                   "Straat: $straat $huisnr\n" .
+                   "Telefoon: $tel\n" .
+                   "Dozen: $dozen\n" .
+                   "Frequentie: $freq\n\n" .
+                   "Inloggen om goed te keuren →\n" .
+                   "https://eitjes.kunkeler.net/public/index.php";
+        
+        sendWhatsAppNotification($bericht);
+        
+        echo json_encode(array('ok' => true, 'id' => $registratieId));
+        exit;
+    }
 }
 
 echo json_encode(array('error' => 'Onbekende actie'));
+
+function sendWhatsAppNotification($bericht) {
+    if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_WHATSAPP_FROM) {
+        return false; // Twilio niet geconfigureerd
+    }
+    
+    $url = 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Messages.json';
+    
+    $postData = array(
+        'From' => 'whatsapp:' . TWILIO_WHATSAPP_FROM,
+        'To' => 'whatsapp:' . JULIAN_WHATSAPP,
+        'Body' => $bericht
+    );
+    
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
+    curl_setopt($ch, CURLOPT_USERPWD, TWILIO_ACCOUNT_SID . ':' . TWILIO_AUTH_TOKEN);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    return $response ? true : false;
+}
 
 function isAanDeBeurt($frequentie, $startweek, $weeknummer) {
     if ($frequentie === 'eenmalig')   return false;
