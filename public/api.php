@@ -172,17 +172,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute(array($naam, $straat, $huisnr, $tel, $email, $dozen, $freq, (int)date('W')));
         $registratieId = $db->lastInsertId();
         
-        // WhatsApp notification naar Julian
-        $bericht = "🔔 Nieuwe inschrijving!\n\n" .
+        // Email notification naar Julian
+        $bericht = "Nieuwe inschrijving voor Julian's Verse Eitjes:\n\n" .
                    "Naam: $naam\n" .
                    "Straat: $straat $huisnr\n" .
                    "Telefoon: $tel\n" .
+                   "Email: $email\n" .
                    "Dozen: $dozen\n" .
                    "Frequentie: $freq\n\n" .
-                   "Inloggen om goed te keuren →\n" .
-                   "https://eitjes.kunkeler.net/public/index.php";
+                   "Goedgekeurd via: https://eitjes.kunkeler.net/public/index.php";
         
-        sendWhatsAppNotification($bericht);
+        sendEmailNotification('Nieuwe inschrijving', $bericht);
         
         echo json_encode(array('ok' => true, 'id' => $registratieId));
         exit;
@@ -191,29 +191,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 echo json_encode(array('error' => 'Onbekende actie'));
 
-function sendWhatsAppNotification($bericht) {
-    if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_WHATSAPP_FROM) {
-        return false; // Twilio niet geconfigureerd
+function sendEmailNotification($subject, $bericht) {
+    if (!defined('JULIAN_EMAIL') || !JULIAN_EMAIL) {
+        return false;
     }
-    
-    $url = 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Messages.json';
-    
-    $postData = array(
-        'From' => 'whatsapp:' . TWILIO_WHATSAPP_FROM,
-        'To' => 'whatsapp:' . JULIAN_WHATSAPP,
-        'Body' => $bericht
-    );
-    
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($postData));
-    curl_setopt($ch, CURLOPT_USERPWD, TWILIO_ACCOUNT_SID . ':' . TWILIO_AUTH_TOKEN);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
-    $response = curl_exec($ch);
-    curl_close($ch);
-    
-    return $response ? true : false;
+
+    $subject = EMAIL_SUBJECT_PREFIX . $subject;
+    $headers = [];
+    $headers[] = 'From: ' . EMAIL_FROM;
+    $headers[] = 'Reply-To: ' . EMAIL_FROM;
+    $headers[] = 'Content-Type: text/plain; charset=UTF-8';
+
+    return mail(JULIAN_EMAIL, $subject, $bericht, implode("\r\n", $headers));
 }
 
 function isAanDeBeurt($frequentie, $startweek, $weeknummer) {
