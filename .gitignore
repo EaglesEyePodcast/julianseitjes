@@ -1,0 +1,15 @@
+# Gevoelige bestanden
+config/config.php
+.env
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Logs
+*.log
