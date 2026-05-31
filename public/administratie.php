@@ -2,25 +2,19 @@
 session_start();
 require_once dirname(__DIR__) . '/config/config.php';
 
-// Login verwerken
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['wachtwoord'])) {
-    if ($_POST['wachtwoord'] === APP_WACHTWOORD) {
-        $_SESSION['julian_in'] = true;
-        header('Location: administratie.php');
-        exit;
-    } else {
-        $login_fout = true;
-    }
-}
-
+// Uitloggen
 if (isset($_GET['uitloggen'])) {
     session_destroy();
     header('Location: index.php');
     exit;
 }
 
-$administratie_ingelogd = isset($_SESSION['julian_in']);
-$ingelogd = false;
+if (!isset($_SESSION['julian_in'])) {
+    header('Location: index.php');
+    exit;
+}
+
+$ingelogd = true;
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -38,8 +32,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .top-login input { width: 160px; padding: 9px 11px; border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 14px; outline: none; background: #fff; }
 .top-login input:focus { border-color: #F5C200; }
 .top-login button { padding: 9px 13px; background: #1a1a1a; color: #F5C200; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.top-link { display: inline-flex; align-items: center; justify-content: center; min-height: 35px; padding: 9px 13px; background: #1a1a1a; color: #F5C200; border-radius: 9px; font-size: 13px; font-weight: 700; text-decoration: none; }
-.top-link.secondary { background: #fff; color: #555; border: 1.5px solid #e0e0e0; }
 .top-login .login-fout { color: #c0392b; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .register-wrap { padding: 1rem 1rem 2.5rem; }
 .register-card { max-width: 500px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
@@ -92,6 +84,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .stat-val { font-size: 22px; font-weight: 700; color: #1a1a1a; }
 .stat-val.geld { color: #2d7a3a; }
 .stat-val.rood { color: #c0392b; }
+.voorraad-card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 1.25rem; border: 1.5px solid #f0f0f0; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+.voorraad-card label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
+.voorraad-card input { width: 100%; padding: 11px 13px; border: 1.5px solid #e8e8e8; border-radius: 9px; font-size: 15px; color: #1a1a1a; background: #fff; outline: none; }
+.voorraad-card input:focus { border-color: #F5C200; }
+.voorraad-card button { min-height: 42px; padding: 0 16px; background: #1a1a1a; color: #F5C200; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.voorraad-help { grid-column: 1 / -1; font-size: 12px; color: #777; line-height: 1.35; }
 
 /* ---- KLANT KAARTJE ---- */
 .klant-card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 10px; border: 1.5px solid #f0f0f0; }
@@ -121,6 +119,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .freq-w  { background: #e3f0ff; color: #1a4b8c; }
 .freq-2w { background: #e8f5e9; color: #1b5e20; }
 .freq-3w { background: #fff8e1; color: #795b00; }
+.route-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 24px; padding: 0 7px; border-radius: 8px; background: #1a1a1a; color: #F5C200; font-size: 11px; font-weight: 800; margin-right: 7px; vertical-align: 1px; }
+.route-help { font-size: 12px; color: #777; margin: -2px 0 12px; line-height: 1.35; }
 
 /* ---- INLINE BEWERKEN ---- */
 .bewerk-formulier { display: none; margin-top: 12px; border-top: 1.5px solid #f0f0f0; padding-top: 12px; }
@@ -159,18 +159,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 /* ---- SECTIE HEADER ---- */
 .straat-header { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin: 1rem 0 6px; padding-left: 2px; }
+@media (max-width: 420px) {
+    .voorraad-card { grid-template-columns: 1fr; }
+    .voorraad-card button { width: 100%; }
+}
 </style>
 </head>
 <body>
 
 <?php if (!$ingelogd): ?>
 <header class="public-header">
-  <?php if ($administratie_ingelogd): ?>
-    <nav class="top-login" aria-label="Administratie">
-      <a class="top-link" href="administratie.php">Administratie</a>
-      <a class="top-link secondary" href="?uitloggen=1">Uitloggen</a>
-    </nav>
-  <?php else: ?>
   <form class="top-login" method="post">
     <?php if (isset($login_fout)): ?>
       <span class="login-fout">Onjuist wachtwoord</span>
@@ -178,7 +176,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <input type="password" name="wachtwoord" placeholder="Wachtwoord" aria-label="Wachtwoord">
     <button type="submit">Login</button>
   </form>
-  <?php endif; ?>
 </header>
 
 <div class="register-wrap">
@@ -251,7 +248,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
             <option value="wekelijks">Elke week</option>
             <option value="2wekelijks">Elke 2 weken</option>
             <option value="3wekelijks">Elke 3 weken</option>
-            <option value="eenmalig">Eenmalig</option>
           </select>
         </div>
       </div>
@@ -386,6 +382,17 @@ function showMessage(msg, type) {
       </div>
     </div>
 
+    <div class="voorraad-card">
+      <div>
+        <label for="overgebleven-dozen">Over van vorige week</label>
+        <input type="number" id="overgebleven-dozen" min="0" max="999" value="0">
+      </div>
+      <button type="button" onclick="voorraadOpslaan()">Opslaan</button>
+      <div class="voorraad-help">
+        Bestelling: <span id="s-bestel-uitleg">laden...</span>
+      </div>
+    </div>
+
     <div id="week-lijst"></div>
   </div>
 
@@ -425,6 +432,10 @@ function showMessage(msg, type) {
           <label>Startweek</label>
           <input type="number" id="f-start" min="1" max="52" value="1">
         </div>
+      </div>
+      <div class="form-row">
+        <label>Route volgorde</label>
+        <input type="number" id="f-route" min="0" max="999" value="0" placeholder="Bijv. 10">
       </div>
       <div class="form-row">
         <label>Frequentie *</label>
@@ -490,7 +501,27 @@ function laadWeek() {
             document.getElementById('s-dozen').textContent   = s.totaal_dozen;
             document.getElementById('s-trays').textContent   = s.trays_nodig;
             document.getElementById('s-omzet').textContent   = '€' + parseFloat(s.omzet).toFixed(2);
+            document.getElementById('overgebleven-dozen').value = s.overgebleven_dozen || 0;
+            document.getElementById('s-bestel-uitleg').textContent =
+                s.totaal_dozen + ' nodig + ' + s.reserve_dozen + ' reserve - ' +
+                s.overgebleven_dozen + ' over = ' + s.te_bestellen_dozen +
+                ' dozen bestellen (' + s.trays_nodig + ' trays)';
         });
+}
+
+function voorraadOpslaan() {
+    var waarde = parseInt(document.getElementById('overgebleven-dozen').value, 10);
+    if (isNaN(waarde) || waarde < 0) {
+        toast('Vul een geldig aantal overgebleven dozen in');
+        return;
+    }
+
+    api('voorraad_opslaan', {
+        week: getWeek(),
+        jaar: getJaar(),
+        overgebleven_dozen: waarde
+    }, 'Voorraad opgeslagen');
+    setTimeout(laadWeek, 250);
 }
 
 function renderWeekLijst(klanten, week, jaar) {
@@ -500,40 +531,34 @@ function renderWeekLijst(klanten, week, jaar) {
         return;
     }
 
-    var straatGroepen = {};
-    klanten.forEach(function(k) {
-        if (!straatGroepen[k.straat]) straatGroepen[k.straat] = [];
-        straatGroepen[k.straat].push(k);
-    });
-
     var html = '';
-    Object.keys(straatGroepen).sort().forEach(function(straat) {
-        html += '<div class="straat-header">' + esc(straat) + '</div>';
-        straatGroepen[straat].forEach(function(k) {
-            var status = k.betaald ? 'betaald' : (k.tikkie ? 'tikkie' : 'open');
-            var badgeTekst = k.betaald ? 'Betaald' : (k.tikkie ? 'Tikkie verstuurd' : 'Tikkie open');
-            var bedrag = (k.aantal_dozen * 3.30).toFixed(2);
-            var id = k.id;
+    html += '<div class="straat-header">Looproute</div>';
+    klanten.forEach(function(k, index) {
+        var status = k.betaald ? 'betaald' : (k.tikkie ? 'tikkie' : 'open');
+        var badgeTekst = k.betaald ? 'Betaald' : (k.tikkie ? 'Tikkie verstuurd' : 'Tikkie open');
+        var bedrag = (k.aantal_dozen * 3.30).toFixed(2);
+        var id = k.id;
+        var route = parseInt(k.bezorg_volgorde || 0, 10);
+        var routeLabel = route > 0 ? route : (index + 1);
 
-            html += '<div class="klant-card">';
-            html += '<div class="klant-top">';
-            html += '<div><div class="klant-naam">' + esc(k.naam) + '</div>';
-            html += '<div class="klant-adres">' + esc(k.straat) + ' ' + esc(k.huisnummer) + '</div></div>';
-            html += '<span class="status-badge status-' + status + '">' + badgeTekst + '</span>';
-            html += '</div>';
-            html += '<div style="font-size:13px;color:#555;margin-top:6px;">' + k.aantal_dozen + ' doos &nbsp;·&nbsp; €' + bedrag + '</div>';
-            html += '<div class="toggle-rij">';
+        html += '<div class="klant-card">';
+        html += '<div class="klant-top">';
+        html += '<div><div class="klant-naam"><span class="route-tag">' + routeLabel + '</span>' + esc(k.naam) + '</div>';
+        html += '<div class="klant-adres">' + esc(k.straat) + ' ' + esc(k.huisnummer) + '</div></div>';
+        html += '<span class="status-badge status-' + status + '">' + badgeTekst + '</span>';
+        html += '</div>';
+        html += '<div style="font-size:13px;color:#555;margin-top:6px;">' + k.aantal_dozen + ' doos &nbsp;·&nbsp; €' + bedrag + '</div>';
+        html += '<div class="toggle-rij">';
 
-            var bezorgd  = k.bezorgd  === true;
-            var tikkie   = k.tikkie   === true;
-            var betaald  = k.betaald  === true;
+        var bezorgd  = k.bezorgd  === true;
+        var tikkie   = k.tikkie   === true;
+        var betaald  = k.betaald  === true;
 
-            html += '<button id="bezorgd-' + id + '" class="toggle-btn' + (bezorgd ? ' t-aan' : '') + '" onclick="toggleBezorgd(' + id + ',' + week + ',' + jaar + ',' + (bezorgd ? 1 : 0) + ')">' + (bezorgd ? '&#10003; Bezorgd' : 'Bezorgd') + '</button>';
-            html += '<button id="tikkie-'  + id + '" class="toggle-btn' + (tikkie  ? ' t-aan' : '') + '" onclick="toggleTikkie('  + id + ',' + week + ',' + jaar + ',' + (tikkie  ? 1 : 0) + ')">' + (tikkie  ? '&#10003; Tikkie'  : 'Tikkie')  + '</button>';
-            html += '<button id="betaald-' + id + '" class="toggle-btn' + (betaald ? ' t-aan' : '') + '" onclick="toggleBetaald(' + id + ',' + week + ',' + jaar + ',' + (betaald ? 1 : 0) + ')">' + (betaald ? '&#10003; Betaald' : 'Betaald') + '</button>';
+        html += '<button id="bezorgd-' + id + '" class="toggle-btn' + (bezorgd ? ' t-aan' : '') + '" onclick="toggleBezorgd(' + id + ',' + week + ',' + jaar + ',' + (bezorgd ? 1 : 0) + ')">' + (bezorgd ? '&#10003; Bezorgd' : 'Bezorgd') + '</button>';
+        html += '<button id="tikkie-'  + id + '" class="toggle-btn' + (tikkie  ? ' t-aan' : '') + '" onclick="toggleTikkie('  + id + ',' + week + ',' + jaar + ',' + (tikkie  ? 1 : 0) + ')">' + (tikkie  ? '&#10003; Tikkie'  : 'Tikkie')  + '</button>';
+        html += '<button id="betaald-' + id + '" class="toggle-btn' + (betaald ? ' t-aan' : '') + '" onclick="toggleBetaald(' + id + ',' + week + ',' + jaar + ',' + (betaald ? 1 : 0) + ')">' + (betaald ? '&#10003; Betaald' : 'Betaald') + '</button>';
 
-            html += '</div></div>';
-        });
+        html += '</div></div>';
     });
 
     document.getElementById('week-lijst').innerHTML = html;
@@ -547,30 +572,27 @@ function laadKlanten() {
                 document.getElementById('klant-lijst').innerHTML = '<div class="leeg">Nog geen klanten</div>';
                 return;
             }
-            var straatGroepen = {};
-            data.forEach(function(k) {
-                if (!straatGroepen[k.straat]) straatGroepen[k.straat] = [];
-                straatGroepen[k.straat].push(k);
-            });
             var html = '';
-            Object.keys(straatGroepen).sort().forEach(function(straat) {
-                html += '<div class="straat-header">' + esc(straat) + '</div>';
-                straatGroepen[straat].forEach(function(k) {
+            html += '<div class="straat-header">Route volgorde</div>';
+            html += '<div class="route-help">Geef klanten een route nummer. Lage nummers komen eerst in de weeklijst. Laat 0 staan voor automatische volgorde onderaan.</div>';
+            data.forEach(function(k, index) {
                     var freqMap   = {wekelijks: 'Wekelijks', '2wekelijks': '2-wekelijks', '3wekelijks': '3-wekelijks', eenmalig: 'Eenmalig'};
                     var freqClass = {wekelijks: 'freq-w', '2wekelijks': 'freq-2w', '3wekelijks': 'freq-3w', eenmalig: 'freq-3w'};
                     var fOpt = function(val, label, cur) {
                         return '<option value="' + val + '"' + (cur === val ? ' selected' : '') + '>' + label + '</option>';
                     };
+                    var route = parseInt(k.bezorg_volgorde || 0, 10);
+                    var routeLabel = route > 0 ? route : (index + 1);
 
                     html += '<div class="klant-card" id="kkaart-' + k.id + '">';
 
                     // Vaste weergave bovenaan
                     html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;">';
                     html += '<div>';
-                    html += '<div class="klant-naam">' + esc(k.naam) + '</div>';
+                    html += '<div class="klant-naam"><span class="route-tag">' + routeLabel + '</span>' + esc(k.naam) + '</div>';
                     html += '<div class="klant-adres">' + esc(k.straat) + ' ' + esc(k.huisnummer) + '</div>';
                     if (k.telefoon) html += '<div class="klant-adres">' + esc(k.telefoon) + '</div>';
-                    html += '<div style="margin-top:4px;font-size:12px;color:#555;">' + k.aantal_dozen + ' doos · startweek ' + k.startweek + '</div>';
+                    html += '<div style="margin-top:4px;font-size:12px;color:#555;">' + k.aantal_dozen + ' doos · route ' + (route || 'auto') + ' · startweek ' + k.startweek + '</div>';
                     html += '</div>';
                     html += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">';
                     html += '<span class="freq-tag ' + freqClass[k.frequentie] + '">' + freqMap[k.frequentie] + '</span>';
@@ -596,6 +618,9 @@ function laadKlanten() {
                     html += '<div><label class="bewerk-lbl">Startweek</label><input type="number" id="b-start-' + k.id + '" value="' + k.startweek + '" min="1" max="52"></div>';
                     html += '</div>';
 
+                    html += '<label class="bewerk-lbl">Route volgorde</label>';
+                    html += '<input type="number" id="b-route-' + k.id + '" value="' + (k.bezorg_volgorde || 0) + '" min="0" max="999">';
+
                     html += '<label class="bewerk-lbl">Frequentie</label>';
                     html += '<select id="b-freq-' + k.id + '">';
                     html += fOpt('wekelijks',  'Elke week',    k.frequentie);
@@ -611,7 +636,6 @@ function laadKlanten() {
 
                     html += '</div>'; // einde bewerk-formulier
                     html += '</div>'; // einde klant-card
-                });
             });
             document.getElementById('klant-lijst').innerHTML = html;
         });
@@ -631,7 +655,8 @@ function klantUpdaten(id) {
         telefoon:     document.getElementById('b-tel-'   + id).value.trim(),
         aantal_dozen: document.getElementById('b-dozen-' + id).value,
         frequentie:   document.getElementById('b-freq-'  + id).value,
-        startweek:    document.getElementById('b-start-' + id).value
+        startweek:    document.getElementById('b-start-' + id).value,
+        bezorg_volgorde: document.getElementById('b-route-' + id).value
     };
     if (!data.naam || !data.straat || !data.huisnummer) {
         toast('Vul naam, straat en huisnummer in');
@@ -704,6 +729,7 @@ function klantOpslaan() {
         aantal_dozen: document.getElementById('f-dozen').value,
         frequentie:   document.getElementById('f-freq').value,
         startweek:    document.getElementById('f-start').value,
+        bezorg_volgorde: document.getElementById('f-route').value,
         notitie:      document.getElementById('f-notitie').value.trim()
     };
     if (!data.naam || !data.straat || !data.huisnummer) {
@@ -716,6 +742,7 @@ function klantOpslaan() {
     document.getElementById('f-huisnr').value  = '';
     document.getElementById('f-tel').value     = '';
     document.getElementById('f-dozen').value   = '1';
+    document.getElementById('f-route').value   = '0';
     document.getElementById('f-notitie').value = '';
     setTimeout(function() { toonTab('klanten'); }, 600);
 }

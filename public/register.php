@@ -48,9 +48,15 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div id="message"></div>
 
   <form id="registerForm">
-    <div class="form-row">
-      <label>Voornaam <span class="required">*</span></label>
-      <input type="text" name="naam" placeholder="Jan" required>
+    <div class="form-row-2">
+      <div class="form-row">
+        <label>Voornaam <span class="required">*</span></label>
+        <input type="text" name="voornaam" placeholder="Jan" required>
+      </div>
+      <div class="form-row">
+        <label>Achternaam <span class="required">*</span></label>
+        <input type="text" name="achternaam" placeholder="Jansen" required>
+      </div>
     </div>
 
     <div class="form-row-2">
@@ -101,6 +107,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <option value="wekelijks">Elke week</option>
           <option value="2wekelijks">Elke 2 weken</option>
           <option value="3wekelijks">Elke 3 weken</option>
+          <option value="eenmalig">Eenmalig</option>
         </select>
       </div>
     </div>
@@ -122,7 +129,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
   e.preventDefault();
 
-  const naam = document.querySelector('input[name="naam"]').value.trim();
+  const voornaam = document.querySelector('input[name="voornaam"]').value.trim();
+  const achternaam = document.querySelector('input[name="achternaam"]').value.trim();
   const straat = document.querySelector('select[name="straat"]').value;
   const huisnummer = document.querySelector('input[name="huisnummer"]').value.trim();
   const telefoon = document.querySelector('input[name="telefoon"]').value.trim();
@@ -130,17 +138,17 @@ document.getElementById('registerForm').addEventListener('submit', async functio
   const aantal_dozen = document.querySelector('input[name="aantal_dozen"]').value;
   const frequentie = document.querySelector('select[name="frequentie"]').value;
 
-  if (!naam || !straat || !huisnummer || !telefoon) {
+  if (!voornaam || !achternaam || !straat || !huisnummer || !telefoon) {
     showMessage('Vul alstublieft alle verplichte velden in', 'error');
     return;
   }
 
   try {
-    const response = await fetch('../api.php?action=register', {
+    const response = await fetch('api.php?action=register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        naam, straat, huisnummer, telefoon, email, aantal_dozen, frequentie
+        voornaam, achternaam, straat, huisnummer, telefoon, email, aantal_dozen, frequentie
       })
     });
 
@@ -150,7 +158,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
       showMessage('Bedankt! We nemen snel contact met u op.', 'success');
       document.getElementById('registerForm').reset();
       setTimeout(() => {
-        window.location.href = 'index/index.php';
+        window.location.href = 'index.php';
       }, 2000);
     } else {
       showMessage(result.error || 'Er ging iets mis', 'error');
