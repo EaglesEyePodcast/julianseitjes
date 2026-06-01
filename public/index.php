@@ -334,7 +334,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="hero-copy reveal">
       <span class="eyebrow">Zwolse Wijk - elke zondag</span>
       <h1>Verse eitjes aan de deur in de <em>Zwolse Wijk</em></h1>
-      <p>Ik ben Julian, 14 jaar, en ik bezorg iedere week verse vrije-uitloopeieren bij gezinnen in de Zwolse Wijk.</p>
+      <p>Ik ben Julian, 14 jaar, en ik bezorg iedere week verse eieren aan huis in de Zwolse Wijk. Vers van de boer, persoonlijk bezorgd.</p>
       <div class="hero-actions">
         <a class="btn primary" href="#inschrijven">Schrijf je in</a>
         <a class="btn dark" href="https://wa.me/31619528377">WhatsApp Julian</a>
