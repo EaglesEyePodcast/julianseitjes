@@ -159,7 +159,11 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     const result = await response.json();
 
     if (result.ok) {
-      showMessage('Bedankt! We nemen snel contact met u op.', 'success');
+      if (result.mail_ok === false) {
+        showMessage('Bedankt! Je inschrijving is ontvangen. App Julian ook even via 06-19 52 83 77, dan weet je zeker dat hij hem ziet.', 'success');
+      } else {
+        showMessage('Bedankt! Je inschrijving is ontvangen. Julian neemt contact met je op. Hoor je niets? App dan 06-19 52 83 77.', 'success');
+      }
       document.getElementById('registerForm').reset();
       setTimeout(() => {
         window.location.href = 'index.php';

@@ -96,6 +96,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .klant-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .klant-naam { font-size: 15px; font-weight: 600; color: #1a1a1a; }
 .klant-adres { font-size: 12px; color: #888; margin-top: 1px; }
+.klant-notitie { margin-top: 7px; padding: 8px 10px; border-radius: 9px; background: #fff8e1; color: #5f4700; font-size: 12px; line-height: 1.35; font-weight: 650; }
 .status-badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
 .status-open   { background: #fdecea; color: #b71c1c; }
 .status-tikkie { background: #fff8e1; color: #795b00; }
@@ -121,6 +122,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .freq-3w { background: #fff8e1; color: #795b00; }
 .route-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 24px; padding: 0 7px; border-radius: 8px; background: #1a1a1a; color: #F5C200; font-size: 11px; font-weight: 800; margin-right: 7px; vertical-align: 1px; }
 .route-help { font-size: 12px; color: #777; margin: -2px 0 12px; line-height: 1.35; }
+.utility-row { margin: -0.4rem 0 1rem; display: flex; justify-content: flex-end; }
+.utility-btn { padding: 8px 12px; border-radius: 9px; border: 1.5px solid #e8e8e8; background: #fff; color: #1a1a1a; font-size: 12px; font-weight: 700; cursor: pointer; }
+.utility-btn:active { transform: scale(0.98); }
 
 /* ---- INLINE BEWERKEN ---- */
 .bewerk-formulier { display: none; margin-top: 12px; border-top: 1.5px solid #f0f0f0; padding-top: 12px; }
@@ -306,7 +310,11 @@ document.getElementById('registerForm').addEventListener('submit', async functio
         var result = await response.json();
 
         if (result.ok) {
-            showMessage('Bedankt! We nemen snel contact met u op.', 'success');
+            if (result.mail_ok === false) {
+                showMessage('Bedankt! Je inschrijving is ontvangen. App Julian ook even via 06-19 52 83 77, dan weet je zeker dat hij hem ziet.', 'success');
+            } else {
+                showMessage('Bedankt! Je inschrijving is ontvangen. Julian neemt contact met je op. Hoor je niets? App dan 06-19 52 83 77.', 'success');
+            }
             document.getElementById('registerForm').reset();
         } else {
             showMessage(result.error || 'Er ging iets mis', 'error');
@@ -343,6 +351,9 @@ function showMessage(msg, type) {
     <button class="tab-btn active" onclick="toonTab('week')">Deze week</button>
     <button class="tab-btn" onclick="toonTab('klanten')">Klanten</button>
     <button class="tab-btn" onclick="toonTab('nieuw')">+ Nieuw</button>
+  </div>
+  <div class="utility-row">
+    <button class="utility-btn" onclick="testMail()">Test mail</button>
   </div>
 
   <!-- WEEK TAB -->
@@ -597,6 +608,7 @@ function laadKlanten() {
                     html += '<div class="klant-adres">' + esc(k.straat) + ' ' + esc(k.huisnummer) + '</div>';
                     if (k.telefoon) html += '<div class="klant-adres">' + esc(k.telefoon) + '</div>';
                     html += '<div style="margin-top:4px;font-size:12px;color:#555;">' + k.aantal_dozen + ' doos · route ' + (route || 'auto') + ' · startweek ' + k.startweek + '</div>';
+                    if (k.notitie) html += '<div class="klant-notitie">' + esc(k.notitie) + '</div>';
                     html += '</div>';
                     html += '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">';
                     html += '<span class="freq-tag ' + freqClass[k.frequentie] + '">' + freqMap[k.frequentie] + '</span>';
@@ -765,6 +777,10 @@ function api(action, data, bericht) {
               toast(res.error || 'Er ging iets mis');
           }
       });
+}
+
+function testMail() {
+    api('test_mail', {}, 'Testmail verstuurd. Check de inbox en spam van Julian.');
 }
 
 function toast(msg) {

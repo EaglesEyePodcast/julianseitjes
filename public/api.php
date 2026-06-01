@@ -173,6 +173,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    if ($action === 'test_mail') {
+        $bericht = "Dit is een testmail vanaf Julian's Verse Eitjes.\n\n" .
+                   "Als deze mail aankomt, accepteert de server de mailnotificaties.\n" .
+                   "Controleer ook spam/reclame als hij niet in de inbox staat.\n\n" .
+                   "Tijdstip: " . date('Y-m-d H:i:s');
+        $ok = sendEmailNotification('Test mailnotificatie', $bericht);
+        echo json_encode(array(
+            'ok' => $ok,
+            'error' => $ok ? null : 'Testmail kon niet worden verstuurd door de server'
+        ));
+        exit;
+    }
+
     if ($action === 'register') {
         $voornaam   = trim($data['voornaam'] ?? '');
         $achternaam = trim($data['achternaam'] ?? '');
@@ -218,10 +231,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                    "Frequentie: $freq\n" .
                    "Startweek: $startweek\n\n" .
                    "De klant staat direct in het klantenoverzicht:\n" .
-                   "https://eitjes.kunkeler.net/public/administratie.php";
+                   "https://eitjes.kunkeler.net/administratie.php";
         
-        sendEmailNotification('Nieuwe klant via website', $bericht);
+        $replyTo = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : '';
+        $julianMailOk = sendEmailNotification('Nieuwe klant via website', $bericht, $replyTo);
+        if (!$julianMailOk) {
+            $notitie .= ' LET OP: emailnotificatie naar Julian kon niet worden verstuurd. Bel/app deze klant zelf.';
+            $stmt = $db->prepare("UPDATE klanten SET notitie = ? WHERE id = ?");
+            $stmt->execute(array($notitie, $klantId));
+            error_log("Julian's Eitjes: mailnotificatie naar Julian mislukt voor klant $klantId ($naam)");
+        }
 
+        $customerMailOk = null;
         if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $klantBericht = "Beste $voornaam,\n\n" .
                             "Bedankt voor je inschrijving bij Julian's Verse Eitjes.\n\n" .
@@ -233,17 +254,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             "Julian neemt contact met je op als er nog iets afgestemd moet worden.\n\n" .
                             "Groeten,\n" .
                             "Julian's Verse Eitjes";
-            sendCustomerEmail($email, 'Bevestiging inschrijving', $klantBericht);
+            $customerMailOk = sendCustomerEmail($email, 'Bevestiging inschrijving', $klantBericht);
+            if (!$customerMailOk) {
+                error_log("Julian's Eitjes: bevestigingsmail naar klant mislukt voor klant $klantId ($email)");
+            }
         }
         
-        echo json_encode(array('ok' => true, 'id' => $klantId));
+        echo json_encode(array(
+            'ok' => true,
+            'id' => $klantId,
+            'mail_ok' => $julianMailOk,
+            'customer_mail_ok' => $customerMailOk
+        ));
         exit;
     }
 }
 
 echo json_encode(array('error' => 'Onbekende actie'));
 
-function sendEmailNotification($subject, $bericht) {
+function sendEmailNotification($subject, $bericht, $replyTo = '') {
     if (!defined('JULIAN_EMAIL') || !JULIAN_EMAIL) {
         return false;
     }
@@ -251,10 +280,10 @@ function sendEmailNotification($subject, $bericht) {
     $subject = EMAIL_SUBJECT_PREFIX . $subject;
     $headers = [];
     $headers[] = 'From: ' . EMAIL_FROM;
-    $headers[] = 'Reply-To: ' . EMAIL_FROM;
+    $headers[] = 'Reply-To: ' . ($replyTo ?: EMAIL_FROM);
     $headers[] = 'Content-Type: text/plain; charset=UTF-8';
 
-    return mail(JULIAN_EMAIL, $subject, $bericht, implode("\r\n", $headers));
+    return sendPlainMail(JULIAN_EMAIL, $subject, $bericht, $headers);
 }
 
 function sendCustomerEmail($to, $subject, $bericht) {
@@ -264,7 +293,20 @@ function sendCustomerEmail($to, $subject, $bericht) {
     $headers[] = 'Reply-To: ' . EMAIL_FROM;
     $headers[] = 'Content-Type: text/plain; charset=UTF-8';
 
-    return mail($to, $subject, $bericht, implode("\r\n", $headers));
+    return sendPlainMail($to, $subject, $bericht, $headers);
+}
+
+function sendPlainMail($to, $subject, $bericht, $headers) {
+    $headerString = implode("\r\n", $headers);
+    $params = '';
+    if (defined('EMAIL_FROM') && filter_var(EMAIL_FROM, FILTER_VALIDATE_EMAIL)) {
+        $params = '-f' . EMAIL_FROM;
+    }
+
+    if ($params) {
+        return mail($to, $subject, $bericht, $headerString, $params);
+    }
+    return mail($to, $subject, $bericht, $headerString);
 }
 
 function frequentieLabel($frequentie) {
