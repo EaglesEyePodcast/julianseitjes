@@ -81,6 +81,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
           <option value="Sallandstraat">Sallandstraat</option>
           <option value="Sint Jurrienstraat">Sint Jurrienstraat</option>
           <option value="Zwolseweg">Zwolseweg</option>
+          <option value="Mijn straat staat er niet tussen, maar ik wil wel graag eitjes">Mijn straat staat er niet tussen, maar ik wil wel graag eitjes</option>
         </select>
       </div>
       <div class="form-row">

@@ -322,7 +322,8 @@ function standaardStraten() {
         'Richard Paffraedstraat',
         'Sallandstraat',
         'Sint Jurrienstraat',
-        'Zwolseweg'
+        'Zwolseweg',
+        'Mijn straat staat er niet tussen, maar ik wil wel graag eitjes'
     );
 }
 

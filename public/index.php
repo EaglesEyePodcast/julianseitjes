@@ -47,14 +47,18 @@ $ingelogd = false;
 <meta name="twitter:image" content="https://eitjes.kunkeler.net/logo.png">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; scroll-padding-top: 90px; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fffaf0; min-height: 100vh; color: #17120d; }
 
 /* ---- PUBLIEKE INSCHRIJVING ---- */
 .public-page { overflow: hidden; }
-.public-header { width: 100%; padding: 16px max(18px, calc((100vw - 1180px) / 2)); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; background: rgba(255,250,240,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(26,18,10,0.08); }
+.public-header { width: 100%; padding: 16px max(18px, calc((100vw - 1180px) / 2)); display: flex; justify-content: space-between; align-items: center; gap: 18px; position: sticky; top: 0; z-index: 10; background: rgba(255,250,240,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(26,18,10,0.08); }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #17120d; font-weight: 900; letter-spacing: -0.02em; }
 .brand img { width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12)); }
 .brand span { display: block; line-height: 1.05; }
+.site-nav { display: flex; align-items: center; justify-content: center; gap: 8px; flex: 1; }
+.site-nav a { padding: 9px 12px; border-radius: 999px; color: #332b24; font-size: 14px; font-weight: 850; text-decoration: none; transition: background 0.2s ease, color 0.2s ease; white-space: nowrap; }
+.site-nav a:hover { background: #17120d; color: #F5C200; }
 .top-login { display: flex; align-items: center; gap: 8px; }
 .top-login input { width: 160px; padding: 9px 11px; border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 14px; outline: none; background: #fff; }
 .top-login input:focus { border-color: #F5C200; }
@@ -91,10 +95,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .dark-section .section-head p { color: rgba(255,255,255,0.72); }
 .feature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
 .feature-card, .podcast-card, .about-copy, .register-card { border-radius: 30px; background: #fff; box-shadow: 0 18px 45px rgba(0,0,0,0.09); }
-.feature-card { min-height: 220px; padding: 24px; border: 1px solid rgba(23,18,13,0.08); color: #17120d; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease; }
+.feature-card { min-height: 240px; padding: 24px; border: 1px solid rgba(23,18,13,0.08); color: #17120d; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease; }
 .feature-card:hover { transform: translateY(-4px); }
 .icon-badge { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 20px; background: #F5C200; border: 3px solid #17120d; font-size: 27px; box-shadow: 7px 7px 0 #d31d20; }
 .feature-card h3 { margin-top: 26px; font-size: 21px; line-height: 1.12; letter-spacing: -0.02em; }
+.feature-card p { margin-top: 12px; color: #665d55; font-size: 15px; line-height: 1.45; font-weight: 650; }
 .about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 34px; align-items: center; }
 .about-photo { position: relative; border-radius: 34px; overflow: hidden; min-height: 520px; box-shadow: 0 24px 58px rgba(0,0,0,0.14); border: 10px solid #fff; background: #F5C200; }
 .about-photo img { width: 100%; height: 100%; min-height: 520px; object-fit: cover; display: block; }
@@ -106,6 +111,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .podcast-logo { width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 24px; background: #17120d; box-shadow: 0 14px 28px rgba(0,0,0,0.18); }
 .podcast-card h2 { font-size: clamp(30px, 4vw, 48px); letter-spacing: -0.03em; }
 .podcast-card p { margin-top: 8px; color: #4f463d; font-size: 18px; line-height: 1.5; }
+.podcast-badge { display: inline-flex; width: fit-content; margin-bottom: 10px; padding: 8px 12px; border-radius: 999px; background: #17120d; color: #F5C200; font-size: 13px; font-weight: 900; }
 .register-section { background: linear-gradient(180deg, #fffaf0 0%, #fff 100%); }
 .register-wrap { max-width: 760px; margin: 0 auto; }
 .register-card { padding: clamp(22px, 4vw, 42px); border: 1px solid rgba(23,18,13,0.08); }
@@ -119,7 +125,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .message.error { color: #c0392b; background: #fdecea; border-left-color: #c0392b; }
 .message.success { color: #1b5e20; background: #e8f5e9; border-left-color: #1b5e20; }
 .public-footer { padding: 42px max(18px, calc((100vw - 1180px) / 2)); background: #17120d; color: #fff; }
-.footer-grid { display: grid; grid-template-columns: 1.2fr repeat(4, auto); gap: 18px; align-items: center; }
+.footer-grid { display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: center; }
 .footer-brand { font-size: 24px; font-weight: 900; color: #F5C200; }
 .footer-item { color: rgba(255,255,255,0.82); font-weight: 750; white-space: nowrap; }
 .footer-item a { color: inherit; text-decoration: none; }
@@ -130,10 +136,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .public-page .submit-btn { min-height: 56px; border-radius: 17px; box-shadow: 0 12px 24px rgba(245,194,0,0.24); }
 
 @media (max-width: 760px) {
-    .public-header { position: sticky; align-items: center; gap: 10px; padding: 10px 14px; }
+    html { scroll-padding-top: 122px; }
+    .public-header { position: sticky; align-items: center; gap: 10px; padding: 10px 14px; flex-wrap: wrap; }
     .brand { gap: 8px; min-width: 0; }
     .brand img { width: 38px; height: 38px; }
     .brand span { font-size: 13px; line-height: 1; }
+    .site-nav { order: 3; flex: 0 0 100%; justify-content: flex-start; gap: 7px; overflow-x: auto; padding: 2px 0 1px; scrollbar-width: none; }
+    .site-nav::-webkit-scrollbar { display: none; }
+    .site-nav a { padding: 8px 10px; background: #fff; border: 1px solid rgba(23,18,13,0.08); font-size: 12px; box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
     .top-login { max-width: 172px; justify-content: flex-end; gap: 6px; }
     .top-login input { width: 108px; min-width: 0; padding: 8px 9px; font-size: 12px; border-radius: 10px; }
     .top-login button { padding: 8px 10px; font-size: 12px; border-radius: 10px; }
@@ -162,11 +172,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     .section-head.center { text-align: left; }
     .section-head h2 { font-size: clamp(31px, 9vw, 40px); line-height: 1.02; }
     .section-head p { font-size: 16px; line-height: 1.5; }
-    .feature-grid, .about-grid, .podcast-card, .footer-grid { grid-template-columns: 1fr; }
+    .feature-grid, .about-grid, .podcast-card { grid-template-columns: 1fr; }
     .feature-grid { gap: 12px; }
     .feature-card, .podcast-card, .about-copy, .register-card { border-radius: 24px; }
     .feature-card { min-height: 0; padding: 18px; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 16px; }
     .feature-card h3 { margin-top: 0; font-size: 18px; line-height: 1.18; }
+    .feature-card p { grid-column: 2; margin-top: -8px; font-size: 14px; }
     .icon-badge { width: 48px; height: 48px; border-radius: 16px; font-size: 23px; box-shadow: 5px 5px 0 #d31d20; }
 
     .about-grid { gap: 16px; }
@@ -181,7 +192,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     .podcast-logo { width: min(150px, 46vw); justify-self: center; border-radius: 20px; }
     .podcast-card h2 { font-size: 32px; }
     .podcast-card p { font-size: 16px; line-height: 1.45; }
-
+    .podcast-badge { font-size: 12px; }
     .register-wrap { max-width: none; }
     .register-card { padding: 20px; }
     .register-head { margin-bottom: 1.35rem; }
@@ -313,6 +324,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <img src="logo.png" alt="">
     <span>Julian's<br>Verse Eitjes</span>
   </a>
+  <nav class="site-nav" aria-label="Hoofdnavigatie">
+    <a href="#waarom-eitjes">Waarom mijn eitjes?</a>
+    <a href="#wie-ben-ik">Wie ben ik?</a>
+    <a href="#podcast">Podcast</a>
+    <a href="#inschrijven">Inschrijven</a>
+  </nav>
   <?php if ($administratie_ingelogd): ?>
     <nav class="top-login" aria-label="Administratie">
       <a class="top-link" href="administratie.php">Administratie</a>
@@ -333,8 +350,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <section class="section hero">
     <div class="hero-copy reveal">
       <span class="eyebrow">Zwolse Wijk - elke zondag</span>
-      <h1>Verse eitjes aan de deur in de <em>Zwolse Wijk</em></h1>
-      <p>Ik ben Julian, 14 jaar, en ik bezorg iedere week verse eieren aan huis in de Zwolse Wijk. Vers van de boer, persoonlijk bezorgd.</p>
+      <h1>Verse vrije-uitloopeieren, rechtstreeks van de <em>boerderij.</em></h1>
+      <p>Ik ben Julian, 14 jaar, en iedere week bezorg ik verse eieren aan huis in de Zwolse Wijk. Rechtstreeks van de boer, persoonlijk bezorgd.</p>
       <div class="hero-actions">
         <a class="btn primary" href="#inschrijven">Schrijf je in</a>
         <a class="btn dark" href="https://wa.me/31619528377">WhatsApp Julian</a>
@@ -357,43 +374,45 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
   </section>
 
-  <section class="section dark-section">
+  <section class="section dark-section" id="waarom-eitjes">
     <div class="section-head center reveal">
-      <h2>Waarom klanten kiezen voor Julian</h2>
-      <p>Gewoon goed geregeld: persoonlijk contact, vaste bezorging en verse eieren rechtstreeks uit de buurtketen.</p>
+      <h2>Waarom zijn mijn eitjes zo lekker?</h2>
+      <p>Mijn eieren komen rechtstreeks van de boerderij en worden iedere week vers geleverd. Daardoor zijn ze vaak veel verser dan eieren die eerst via distributiecentra en supermarkten reizen. Dat proef je.</p>
     </div>
     <div class="feature-grid">
-      <article class="feature-card reveal"><span class="icon-badge">🥚</span><h3>10 verse vrije-uitloopeieren per doosje</h3></article>
-      <article class="feature-card reveal"><span class="icon-badge">🚜</span><h3>Direct van de boer</h3></article>
-      <article class="feature-card reveal"><span class="icon-badge">📦</span><h3>Wekelijkse bezorging</h3></article>
-      <article class="feature-card reveal"><span class="icon-badge">€</span><h3>Slechts €3,30 per doosje</h3></article>
+      <article class="feature-card reveal"><span class="icon-badge">🥚</span><div><h3>Altijd vers</h3><p>Rechtstreeks van de boerderij naar jouw keukentafel.</p></div></article>
+      <article class="feature-card reveal"><span class="icon-badge">🐔</span><div><h3>Van vrije-uitloopkippen</h3><p>Eieren van kippen met ruimte om vrij rond te lopen.</p></div></article>
+      <article class="feature-card reveal"><span class="icon-badge">🚜</span><div><h3>Geen onnodige tussenhandel</h3><p>Geen lange route via grote distributieketens, maar direct van de boer.</p></div></article>
+      <article class="feature-card reveal"><span class="icon-badge">🚲</span><div><h3>Lokaal bezorgd</h3><p>Ik bezorg de eitjes persoonlijk bij gezinnen in de Zwolse Wijk.</p></div></article>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="wie-ben-ik">
     <div class="about-grid">
       <figure class="about-photo reveal">
         <img src="julian-trofee.png" alt="Julian met de Go Ahead Eagles beker">
       </figure>
       <div class="about-copy reveal">
         <div class="section-head">
-          <h2>Wie is Julian?</h2>
+          <h2>Wie ben ik?</h2>
         </div>
-        <p>Julian is 14 jaar en woont in de Zwolse Wijk. Wat begon als een klein idee groeide uit tot een bezorgservice voor inmiddels meer dan 35 gezinnen. Iedere week brengt hij verse vrije-uitloopeieren rond, rechtstreeks van de boer.</p>
-        <p>Naast zijn passie voor ondernemen is Julian groot supporter van Go Ahead Eagles.</p>
-        <div class="supporter-note">Lokaal, energiek en altijd met dezelfde belofte: verse eitjes netjes aan de deur.</div>
+        <p>Hoi! Ik ben Julian, 14 jaar, en ik woon in de Zwolse Wijk. Wat begon als een klein idee is inmiddels uitgegroeid tot een bezorgservice voor meer dan 35 gezinnen in de buurt.</p>
+        <p>Iedere week haal ik verse vrije-uitloopeieren rechtstreeks bij de boerderij op en bezorg ik ze persoonlijk aan huis.</p>
+        <p>Naast mijn passie voor ondernemen ben ik groot supporter van Go Ahead Eagles en maak ik de Eagles Eye Podcast.</p>
+        <div class="supporter-note">Mijn doel is simpel: mensen in de buurt voorzien van echt verse eieren, met persoonlijke service en een glimlach aan de deur.</div>
       </div>
     </div>
   </section>
 
-  <section class="section podcast-section">
+  <section class="section podcast-section" id="podcast">
     <div class="podcast-card reveal">
       <img class="podcast-logo" src="eagles-eye-podcast.png" alt="Eagles Eye Podcast logo">
       <div>
+        <span class="podcast-badge">Bekend van de Eagles Eye Podcast 🎙️</span>
         <h2>Eagles Eye Podcast</h2>
-        <p>Naast het bezorgen van eitjes maakt Julian ook de Eagles Eye Podcast. Hier praat hij over Go Ahead Eagles en deelt hij zijn passie voor de club.</p>
+        <p>Naast mijn bezorgservice maak ik ook de Eagles Eye Podcast. Daar praat ik over Go Ahead Eagles en alles rondom de club.</p>
       </div>
-      <a class="btn primary" href="https://www.EaglesEyePodcast.nl">Luister naar de podcast</a>
+      <a class="btn primary" href="https://www.EaglesEyePodcast.nl">Bekijk de podcast</a>
     </div>
   </section>
 
@@ -403,7 +422,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="register-head">
           <img src="logo.png" alt="Julian's Verse Eitjes">
           <h2>Wil jij ook iedere week verse eitjes aan huis?</h2>
-          <p>Schrijf je hieronder in en Julian neemt contact met je op.</p>
+          <p>Vul hieronder je gegevens in. Ik neem daarna persoonlijk contact met je op om de eerste levering af te stemmen.</p>
         </div>
 
         <div id="message" class="message" style="display:none;"></div>
@@ -442,6 +461,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
                 <option value="Sallandstraat">Sallandstraat</option>
                 <option value="Sint Jurrienstraat">Sint Jurrienstraat</option>
                 <option value="Zwolseweg">Zwolseweg</option>
+                <option value="Mijn straat staat er niet tussen, maar ik wil wel graag eitjes">Mijn straat staat er niet tussen, maar ik wil wel graag eitjes</option>
               </select>
             </div>
             <div class="form-row">
@@ -482,7 +502,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
         <div class="register-info">
           <strong>Hoe werkt het?</strong><br>
           1. Vul het formulier in<br>
-          2. Julian neemt contact met je op<br>
+          2. Ik neem persoonlijk contact met je op<br>
           3. Je eerste levering volgt snel<br>
           <br>
           Vragen? Bel of app: 06-19 52 83 77
@@ -496,6 +516,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="footer-grid">
     <div class="footer-brand">Julian's Verse Eitjes</div>
     <div class="footer-item">📍 Zwolse Wijk</div>
+    <div class="footer-item">🥚 Verse vrije-uitloopeieren</div>
+    <div class="footer-item">🚜 Rechtstreeks van de boerderij</div>
+    <div class="footer-item">🚲 Iedere zondag bezorgd</div>
     <div class="footer-item">🌐 eitjes.kunkeler.net</div>
     <div class="footer-item"><a href="https://www.EaglesEyePodcast.nl">🎙 EaglesEyePodcast.nl</a></div>
     <div class="footer-item">📱 06-19 52 83 77</div>
