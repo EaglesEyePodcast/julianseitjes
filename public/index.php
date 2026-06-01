@@ -28,6 +28,23 @@ $ingelogd = false;
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Julian's Verse Eitjes</title>
+<meta name="description" content="Verse vrije-uitloopeieren aan de deur in de Zwolse Wijk. Julian bezorgt iedere week verse eitjes rechtstreeks van de boer.">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Julian's Verse Eitjes">
+<meta property="og:title" content="Julian's Verse Eitjes">
+<meta property="og:description" content="Verse vrije-uitloopeieren aan de deur in de Zwolse Wijk.">
+<meta property="og:url" content="https://eitjes.kunkeler.net/">
+<meta property="og:image" content="https://eitjes.kunkeler.net/logo.png">
+<meta property="og:image:secure_url" content="https://eitjes.kunkeler.net/logo.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="1024">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Julian's Verse Eitjes">
+<meta name="twitter:description" content="Verse vrije-uitloopeieren aan de deur in de Zwolse Wijk.">
+<meta name="twitter:image" content="https://eitjes.kunkeler.net/logo.png">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fffaf0; min-height: 100vh; color: #17120d; }
