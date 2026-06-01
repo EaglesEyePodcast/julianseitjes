@@ -30,10 +30,14 @@ $ingelogd = false;
 <title>Julian's Verse Eitjes</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f0; min-height: 100vh; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fffaf0; min-height: 100vh; color: #17120d; }
 
 /* ---- PUBLIEKE INSCHRIJVING ---- */
-.public-header { width: 100%; padding: 14px 16px; display: flex; justify-content: flex-end; position: sticky; top: 0; z-index: 10; background: rgba(245,245,240,0.94); backdrop-filter: blur(8px); }
+.public-page { overflow: hidden; }
+.public-header { width: 100%; padding: 16px max(18px, calc((100vw - 1180px) / 2)); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; background: rgba(255,250,240,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid rgba(26,18,10,0.08); }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: #17120d; font-weight: 900; letter-spacing: -0.02em; }
+.brand img { width: 46px; height: 46px; object-fit: contain; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.12)); }
+.brand span { display: block; line-height: 1.05; }
 .top-login { display: flex; align-items: center; gap: 8px; }
 .top-login input { width: 160px; padding: 9px 11px; border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 14px; outline: none; background: #fff; }
 .top-login input:focus { border-color: #F5C200; }
@@ -41,26 +45,148 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .top-link { display: inline-flex; align-items: center; justify-content: center; min-height: 35px; padding: 9px 13px; background: #1a1a1a; color: #F5C200; border-radius: 9px; font-size: 13px; font-weight: 700; text-decoration: none; }
 .top-link.secondary { background: #fff; color: #555; border: 1.5px solid #e0e0e0; }
 .top-login .login-fout { color: #c0392b; font-size: 12px; font-weight: 600; white-space: nowrap; }
-.register-wrap { padding: 1rem 1rem 2.5rem; }
-.register-card { max-width: 500px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.section { padding: 86px max(18px, calc((100vw - 1180px) / 2)); position: relative; }
+.hero { min-height: calc(100vh - 78px); display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr); align-items: center; gap: 56px; padding-top: 54px; background: radial-gradient(circle at 16% 16%, rgba(245,194,0,0.28), transparent 26%), linear-gradient(135deg, #fffaf0 0%, #fff7dd 42%, #ffffff 100%); }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 90px; background: linear-gradient(176deg, transparent 49%, #17120d 50%); pointer-events: none; }
+.eyebrow { display: inline-flex; align-items: center; gap: 9px; padding: 8px 13px; border-radius: 999px; background: #17120d; color: #F5C200; font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; }
+.hero h1 { margin-top: 22px; max-width: 720px; font-size: clamp(42px, 7vw, 86px); line-height: 0.94; letter-spacing: -0.04em; color: #17120d; }
+.hero h1 em { color: #d31d20; font-style: normal; }
+.hero p { margin-top: 22px; max-width: 660px; color: #40362c; font-size: clamp(18px, 2vw, 22px); line-height: 1.48; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 52px; padding: 14px 22px; border-radius: 999px; border: 2px solid #17120d; font-weight: 900; text-decoration: none; box-shadow: 0 12px 24px rgba(0,0,0,0.12); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 16px 30px rgba(0,0,0,0.16); }
+.btn.primary { background: #F5C200; color: #17120d; }
+.btn.dark { background: #17120d; color: #fff; }
+.trust-strip { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.trust-pill { display: inline-flex; align-items: center; gap: 8px; padding: 10px 13px; background: #fff; border: 1px solid rgba(23,18,13,0.1); border-radius: 999px; color: #17120d; font-weight: 800; box-shadow: 0 10px 28px rgba(0,0,0,0.08); }
+.hero-visual { position: relative; min-height: 620px; display: grid; place-items: center; }
+.burst { position: absolute; inset: 4% -4% 6% 4%; background: #F5C200; clip-path: polygon(48% 0, 56% 26%, 80% 5%, 73% 34%, 100% 30%, 78% 49%, 96% 67%, 68% 64%, 66% 94%, 48% 69%, 26% 98%, 29% 65%, 2% 71%, 23% 50%, 0 31%, 29% 34%, 21% 6%, 43% 26%); opacity: 0.98; filter: drop-shadow(0 30px 40px rgba(245,194,0,0.28)); }
+.photo-card { position: relative; width: min(430px, 90vw); aspect-ratio: 0.72; border-radius: 34px; overflow: hidden; border: 10px solid #fff; box-shadow: 0 28px 60px rgba(0,0,0,0.22); transform: rotate(1.5deg); background: #ddd; }
+.photo-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.delivery-card { position: absolute; right: 0; bottom: 42px; width: 225px; padding: 18px; border-radius: 28px; background: #17120d; color: #fff; box-shadow: 0 18px 40px rgba(0,0,0,0.22); transform: rotate(-3deg); }
+.delivery-card strong { display: block; color: #F5C200; font-size: 26px; }
+.delivery-card span { display: block; margin-top: 3px; font-size: 13px; font-weight: 800; }
+.dark-section { background: #17120d; color: #fff; }
+.section-head { max-width: 760px; margin-bottom: 34px; }
+.section-head.center { margin-left: auto; margin-right: auto; text-align: center; }
+.section-head h2 { font-size: clamp(32px, 4.6vw, 58px); line-height: 1; letter-spacing: -0.035em; }
+.section-head p { margin-top: 14px; color: #6c6259; font-size: 18px; line-height: 1.55; }
+.dark-section .section-head p { color: rgba(255,255,255,0.72); }
+.feature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.feature-card, .podcast-card, .about-copy, .register-card { border-radius: 30px; background: #fff; box-shadow: 0 18px 45px rgba(0,0,0,0.09); }
+.feature-card { min-height: 220px; padding: 24px; border: 1px solid rgba(23,18,13,0.08); color: #17120d; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease; }
+.feature-card:hover { transform: translateY(-4px); }
+.icon-badge { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 20px; background: #F5C200; border: 3px solid #17120d; font-size: 27px; box-shadow: 7px 7px 0 #d31d20; }
+.feature-card h3 { margin-top: 26px; font-size: 21px; line-height: 1.12; letter-spacing: -0.02em; }
+.about-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 34px; align-items: center; }
+.about-photo { position: relative; border-radius: 34px; overflow: hidden; min-height: 520px; box-shadow: 0 24px 58px rgba(0,0,0,0.14); border: 10px solid #fff; background: #F5C200; }
+.about-photo img { width: 100%; height: 100%; min-height: 520px; object-fit: cover; display: block; }
+.about-copy { padding: clamp(28px, 4vw, 48px); }
+.about-copy p { color: #443b32; font-size: 19px; line-height: 1.65; margin-top: 18px; }
+.supporter-note { margin-top: 24px; padding: 18px; border-radius: 22px; background: #fff3bc; border-left: 8px solid #d31d20; font-weight: 900; }
+.podcast-section { background: linear-gradient(135deg, #d31d20 0%, #a41014 54%, #17120d 54%, #17120d 100%); color: #fff; }
+.podcast-card { display: grid; grid-template-columns: minmax(108px, 160px) 1fr auto; gap: 22px; align-items: center; padding: clamp(24px, 4vw, 40px); background: rgba(255,255,255,0.97); color: #17120d; border: 4px solid #F5C200; }
+.podcast-logo { width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 24px; background: #17120d; box-shadow: 0 14px 28px rgba(0,0,0,0.18); }
+.podcast-card h2 { font-size: clamp(30px, 4vw, 48px); letter-spacing: -0.03em; }
+.podcast-card p { margin-top: 8px; color: #4f463d; font-size: 18px; line-height: 1.5; }
+.register-section { background: linear-gradient(180deg, #fffaf0 0%, #fff 100%); }
+.register-wrap { max-width: 760px; margin: 0 auto; }
+.register-card { padding: clamp(22px, 4vw, 42px); border: 1px solid rgba(23,18,13,0.08); }
 .register-head { text-align: center; margin-bottom: 2rem; }
-.register-head img { width: 100px; margin-bottom: 1rem; }
-.register-head h1 { font-size: 22px; font-weight: 700; color: #1a1a1a; margin-bottom: 0.5rem; }
-.register-head p { color: #666; font-size: 14px; }
-.register-info { font-size: 12px; color: #666; background: #f9f9f9; padding: 12px; border-radius: 8px; margin-top: 1.5rem; line-height: 1.45; }
+.register-head img { width: 90px; margin-bottom: 1rem; }
+.register-head h2 { font-size: clamp(30px, 5vw, 50px); line-height: 1.03; letter-spacing: -0.035em; color: #1a1a1a; margin-bottom: 0.8rem; }
+.register-head p { color: #665d55; font-size: 18px; }
+.register-info { font-size: 14px; color: #40362c; background: #fff6d1; padding: 16px; border-radius: 18px; margin-top: 1.5rem; line-height: 1.55; border: 1px solid rgba(245,194,0,0.45); }
 .required { color: #c0392b; }
 .message { font-size: 13px; padding: 12px; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid transparent; }
 .message.error { color: #c0392b; background: #fdecea; border-left-color: #c0392b; }
 .message.success { color: #1b5e20; background: #e8f5e9; border-left-color: #1b5e20; }
+.public-footer { padding: 42px max(18px, calc((100vw - 1180px) / 2)); background: #17120d; color: #fff; }
+.footer-grid { display: grid; grid-template-columns: 1.2fr repeat(4, auto); gap: 18px; align-items: center; }
+.footer-brand { font-size: 24px; font-weight: 900; color: #F5C200; }
+.footer-item { color: rgba(255,255,255,0.82); font-weight: 750; white-space: nowrap; }
+.footer-item a { color: inherit; text-decoration: none; }
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.public-page .form-row label { font-size: 13px; color: #2f2922; }
+.public-page .form-row input, .public-page .form-row select { min-height: 52px; border-radius: 15px; border-color: #e7ded0; font-size: 16px; }
+.public-page .submit-btn { min-height: 56px; border-radius: 17px; box-shadow: 0 12px 24px rgba(245,194,0,0.24); }
 
-@media (max-width: 560px) {
-    .public-header { position: static; justify-content: stretch; padding: 12px; }
-    .top-login { width: 100%; }
-    .top-login input { flex: 1; min-width: 0; width: auto; }
-    .top-login .login-fout { position: absolute; top: 48px; right: 14px; }
-    .register-wrap { padding-top: 0.5rem; }
-    .register-card { padding: 1.25rem; }
-    .form-row-2 { grid-template-columns: 1fr; }
+@media (max-width: 760px) {
+    .public-header { position: sticky; align-items: center; gap: 10px; padding: 10px 14px; }
+    .brand { gap: 8px; min-width: 0; }
+    .brand img { width: 38px; height: 38px; }
+    .brand span { font-size: 13px; line-height: 1; }
+    .top-login { max-width: 172px; justify-content: flex-end; gap: 6px; }
+    .top-login input { width: 108px; min-width: 0; padding: 8px 9px; font-size: 12px; border-radius: 10px; }
+    .top-login button { padding: 8px 10px; font-size: 12px; border-radius: 10px; }
+    .top-link { min-height: 34px; padding: 8px 10px; font-size: 12px; }
+    .top-login .login-fout { position: absolute; top: 56px; right: 14px; }
+
+    .section { padding: 46px 16px; }
+    .hero { min-height: auto; grid-template-columns: 1fr; gap: 20px; padding-top: 18px; padding-bottom: 58px; background: linear-gradient(180deg, #fff7df 0%, #fffaf0 60%, #fff 100%); }
+    .hero::after { height: 34px; background: linear-gradient(174deg, transparent 48%, #17120d 49%); }
+    .hero-copy { display: flex; flex-direction: column; align-items: flex-start; }
+    .hero-visual { order: -1; min-height: 350px; margin: 0 -6px 2px; }
+    .burst { inset: 2% -8% 3% -8%; transform: rotate(4deg); }
+    .photo-card { width: min(270px, 72vw); border-radius: 26px; border-width: 7px; box-shadow: 0 18px 34px rgba(0,0,0,0.2); transform: rotate(1deg); }
+    .delivery-card { right: 8px; bottom: 10px; width: min(176px, 48vw); padding: 14px; border-radius: 22px; }
+    .delivery-card strong { font-size: 24px; }
+    .delivery-card span { font-size: 12px; line-height: 1.22; }
+    .eyebrow { font-size: 11px; padding: 7px 11px; }
+    .hero h1 { margin-top: 16px; font-size: clamp(36px, 10.5vw, 46px); line-height: 0.98; letter-spacing: -0.035em; }
+    .hero p { margin-top: 15px; font-size: 16px; line-height: 1.46; }
+    .hero-actions { width: 100%; display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 22px; }
+    .btn { width: 100%; min-height: 50px; padding: 13px 16px; border-radius: 16px; box-shadow: 0 10px 18px rgba(0,0,0,0.1); }
+    .trust-strip { display: grid; grid-template-columns: 1fr; width: 100%; gap: 9px; margin-top: 18px; }
+    .trust-pill { width: 100%; justify-content: flex-start; padding: 10px 12px; border-radius: 16px; font-size: 14px; }
+
+    .section-head { margin-bottom: 22px; }
+    .section-head.center { text-align: left; }
+    .section-head h2 { font-size: clamp(31px, 9vw, 40px); line-height: 1.02; }
+    .section-head p { font-size: 16px; line-height: 1.5; }
+    .feature-grid, .about-grid, .podcast-card, .footer-grid { grid-template-columns: 1fr; }
+    .feature-grid { gap: 12px; }
+    .feature-card, .podcast-card, .about-copy, .register-card { border-radius: 24px; }
+    .feature-card { min-height: 0; padding: 18px; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 16px; }
+    .feature-card h3 { margin-top: 0; font-size: 18px; line-height: 1.18; }
+    .icon-badge { width: 48px; height: 48px; border-radius: 16px; font-size: 23px; box-shadow: 5px 5px 0 #d31d20; }
+
+    .about-grid { gap: 16px; }
+    .about-photo { min-height: 330px; border-radius: 26px; border-width: 7px; }
+    .about-photo img { min-height: 330px; }
+    .about-copy { padding: 22px; }
+    .about-copy p { font-size: 16px; line-height: 1.58; margin-top: 14px; }
+    .supporter-note { margin-top: 18px; padding: 15px; border-radius: 17px; font-size: 15px; }
+
+    .podcast-section { background: linear-gradient(160deg, #d31d20 0%, #a41014 50%, #17120d 50%, #17120d 100%); }
+    .podcast-card { align-items: start; gap: 14px; padding: 20px; border-width: 3px; }
+    .podcast-logo { width: min(150px, 46vw); justify-self: center; border-radius: 20px; }
+    .podcast-card h2 { font-size: 32px; }
+    .podcast-card p { font-size: 16px; line-height: 1.45; }
+
+    .register-wrap { max-width: none; }
+    .register-card { padding: 20px; }
+    .register-head { margin-bottom: 1.35rem; }
+    .register-head img { width: 72px; margin-bottom: 0.7rem; }
+    .register-head h2 { font-size: clamp(29px, 8.5vw, 38px); line-height: 1.05; }
+    .register-head p { font-size: 16px; line-height: 1.45; }
+    .public-page .form-row label { font-size: 12px; }
+    .public-page .form-row input, .public-page .form-row select { min-height: 50px; border-radius: 14px; font-size: 16px; }
+    .form-row-2 { grid-template-columns: 1fr; gap: 0; }
+    .register-info { font-size: 13px; border-radius: 16px; }
+
+    .public-footer { padding: 32px 16px; }
+    .footer-grid { align-items: start; gap: 10px; }
+    .footer-brand { font-size: 22px; margin-bottom: 6px; }
+    .footer-item { white-space: normal; font-size: 14px; }
+}
+
+@media (max-width: 380px) {
+    .hero h1 { font-size: 34px; }
+    .photo-card { width: min(248px, 70vw); }
+    .hero-visual { min-height: 324px; }
+    .delivery-card { width: 158px; }
 }
 
 /* ---- APP SHELL ---- */
@@ -164,7 +290,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <body>
 
 <?php if (!$ingelogd): ?>
+<div class="public-page">
 <header class="public-header">
+  <a class="brand" href="#top" aria-label="Julian's Verse Eitjes">
+    <img src="logo.png" alt="">
+    <span>Julian's<br>Verse Eitjes</span>
+  </a>
   <?php if ($administratie_ingelogd): ?>
     <nav class="top-login" aria-label="Administratie">
       <a class="top-link" href="administratie.php">Administratie</a>
@@ -181,96 +312,195 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <?php endif; ?>
 </header>
 
-<div class="register-wrap">
-  <div class="register-card">
-    <div class="register-head">
-      <img src="logo.png" alt="Julian's Verse Eitjes">
-      <h1>Inschrijven</h1>
-      <p>Ontvang wekelijks vers gekweekte eieren</p>
+<main id="top">
+  <section class="section hero">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">Zwolse Wijk - elke zondag</span>
+      <h1>Verse eitjes aan de deur in de <em>Zwolse Wijk</em></h1>
+      <p>Ik ben Julian, 14 jaar, en ik bezorg iedere week verse vrije-uitloopeieren bij gezinnen in de Zwolse Wijk.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#inschrijven">Schrijf je in</a>
+        <a class="btn dark" href="https://wa.me/31619528377">WhatsApp Julian</a>
+      </div>
+      <div class="trust-strip" aria-label="Waarom mensen Julian vertrouwen">
+        <span class="trust-pill">⭐ Meer dan 35 tevreden gezinnen</span>
+        <span class="trust-pill">🥚 Wekelijks vers van de boer</span>
+        <span class="trust-pill">🚲 Bezorging op zondag</span>
+      </div>
     </div>
-
-    <div id="message" class="message" style="display:none;"></div>
-
-    <form id="registerForm">
-      <div class="form-row-2">
-        <div class="form-row">
-          <label>Voornaam <span class="required">*</span></label>
-          <input type="text" name="voornaam" placeholder="Jan" required>
-        </div>
-        <div class="form-row">
-          <label>Achternaam <span class="required">*</span></label>
-          <input type="text" name="achternaam" placeholder="Jansen" required>
-        </div>
+    <div class="hero-visual reveal">
+      <div class="burst" aria-hidden="true"></div>
+      <figure class="photo-card">
+        <img src="julian-lyon.jpg" alt="Julian met voetbalsjaal in Lyon">
+      </figure>
+      <div class="delivery-card">
+        <strong>35+</strong>
+        <span>gezinnen krijgen al eitjes van Julian</span>
       </div>
-
-      <div class="form-row-2">
-        <div class="form-row">
-          <label>Straat <span class="required">*</span></label>
-          <select name="straat" required>
-            <option value="">-- Kies uw straat --</option>
-            <option value="1e Weerdsweg">1e Weerdsweg</option>
-            <option value="2e Weerdsweg">2e Weerdsweg</option>
-            <option value="Anna Reynvaanstraat">Anna Reynvaanstraat</option>
-            <option value="Borgerlerstraat">Borgerlerstraat</option>
-            <option value="Hallensstraat">Hallensstraat</option>
-            <option value="Jacob van Bredastraat">Jacob van Bredastraat</option>
-            <option value="J.P. Sweelinckstraat">J.P. Sweelinckstraat</option>
-            <option value="Johannes Sinthenstraat">Johannes Sinthenstraat</option>
-            <option value="Kromme Kerkstraat">Kromme Kerkstraat</option>
-            <option value="Radstakeweg">Radstakeweg</option>
-            <option value="Reinckenstraat">Reinckenstraat</option>
-            <option value="Richard Paffraedstraat">Richard Paffraedstraat</option>
-            <option value="Sint Jurrienstraat">Sint Jurrienstraat</option>
-            <option value="Zwolseweg">Zwolseweg</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <label>Huisnummer <span class="required">*</span></label>
-          <input type="text" name="huisnummer" placeholder="12" required>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <label>Telefoonnummer <span class="required">*</span></label>
-        <input type="tel" name="telefoon" placeholder="06-12345678" required>
-      </div>
-
-      <div class="form-row">
-        <label>Email</label>
-        <input type="email" name="email" placeholder="uw@email.nl">
-      </div>
-
-      <div class="form-row-2">
-        <div class="form-row">
-          <label>Aantal dozen <span class="required">*</span></label>
-          <input type="number" name="aantal_dozen" min="1" max="10" value="1" required>
-        </div>
-        <div class="form-row">
-          <label>Frequentie <span class="required">*</span></label>
-          <select name="frequentie" required>
-            <option value="wekelijks">Elke week</option>
-            <option value="2wekelijks">Elke 2 weken</option>
-            <option value="3wekelijks">Elke 3 weken</option>
-            <option value="eenmalig">Eenmalig</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit" class="submit-btn">Inschrijven</button>
-    </form>
-
-    <div class="register-info">
-      <strong>Hoe werkt het?</strong><br>
-      1. Vul het formulier in<br>
-      2. We nemen contact met u op<br>
-      3. Uw eerste levering volgt snel<br>
-      <br>
-      Vragen? Bel: 06-19528377
     </div>
+  </section>
+
+  <section class="section dark-section">
+    <div class="section-head center reveal">
+      <h2>Waarom klanten kiezen voor Julian</h2>
+      <p>Gewoon goed geregeld: persoonlijk contact, vaste bezorging en verse eieren rechtstreeks uit de buurtketen.</p>
+    </div>
+    <div class="feature-grid">
+      <article class="feature-card reveal"><span class="icon-badge">🥚</span><h3>10 verse vrije-uitloopeieren per doosje</h3></article>
+      <article class="feature-card reveal"><span class="icon-badge">🚜</span><h3>Direct van de boer</h3></article>
+      <article class="feature-card reveal"><span class="icon-badge">📦</span><h3>Wekelijkse bezorging</h3></article>
+      <article class="feature-card reveal"><span class="icon-badge">€</span><h3>Slechts €3,30 per doosje</h3></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="about-grid">
+      <figure class="about-photo reveal">
+        <img src="julian-trofee.png" alt="Julian met de Go Ahead Eagles beker">
+      </figure>
+      <div class="about-copy reveal">
+        <div class="section-head">
+          <h2>Wie is Julian?</h2>
+        </div>
+        <p>Julian is 14 jaar en woont in de Zwolse Wijk. Wat begon als een klein idee groeide uit tot een bezorgservice voor inmiddels meer dan 35 gezinnen. Iedere week brengt hij verse vrije-uitloopeieren rond, rechtstreeks van de boer.</p>
+        <p>Naast zijn passie voor ondernemen is Julian groot supporter van Go Ahead Eagles.</p>
+        <div class="supporter-note">Lokaal, energiek en altijd met dezelfde belofte: verse eitjes netjes aan de deur.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section podcast-section">
+    <div class="podcast-card reveal">
+      <img class="podcast-logo" src="eagles-eye-podcast.png" alt="Eagles Eye Podcast logo">
+      <div>
+        <h2>Eagles Eye Podcast</h2>
+        <p>Naast het bezorgen van eitjes maakt Julian ook de Eagles Eye Podcast. Hier praat hij over Go Ahead Eagles en deelt hij zijn passie voor de club.</p>
+      </div>
+      <a class="btn primary" href="https://www.EaglesEyePodcast.nl">Luister naar de podcast</a>
+    </div>
+  </section>
+
+  <section class="section register-section" id="inschrijven">
+    <div class="register-wrap reveal">
+      <div class="register-card">
+        <div class="register-head">
+          <img src="logo.png" alt="Julian's Verse Eitjes">
+          <h2>Wil jij ook iedere week verse eitjes aan huis?</h2>
+          <p>Schrijf je hieronder in en Julian neemt contact met je op.</p>
+        </div>
+
+        <div id="message" class="message" style="display:none;"></div>
+
+        <form id="registerForm">
+          <div class="form-row-2">
+            <div class="form-row">
+              <label>Voornaam <span class="required">*</span></label>
+              <input type="text" name="voornaam" placeholder="Jan" required>
+            </div>
+            <div class="form-row">
+              <label>Achternaam <span class="required">*</span></label>
+              <input type="text" name="achternaam" placeholder="Jansen" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-row">
+              <label>Straat <span class="required">*</span></label>
+              <select name="straat" required>
+                <option value="">-- Kies uw straat --</option>
+                <option value="1e Weerdsweg">1e Weerdsweg</option>
+                <option value="2e Weerdsweg">2e Weerdsweg</option>
+                <option value="Alexander Hegiusstraat">Alexander Hegiusstraat</option>
+                <option value="Anna Reynvaanstraat">Anna Reynvaanstraat</option>
+                <option value="Borgerlerstraat">Borgerlerstraat</option>
+                <option value="Florens Radewijnszstraat">Florens Radewijnszstraat</option>
+                <option value="Hallensstraat">Hallensstraat</option>
+                <option value="Jacob van Bredastraat">Jacob van Bredastraat</option>
+                <option value="JP Sweelinckstraat">JP Sweelinckstraat</option>
+                <option value="Johannes Sinthenstraat">Johannes Sinthenstraat</option>
+                <option value="Kromme Kerkstraat">Kromme Kerkstraat</option>
+                <option value="Radstakeweg">Radstakeweg</option>
+                <option value="Reinckenstraat">Reinckenstraat</option>
+                <option value="Richard Paffraedstraat">Richard Paffraedstraat</option>
+                <option value="Sallandstraat">Sallandstraat</option>
+                <option value="Sint Jurrienstraat">Sint Jurrienstraat</option>
+                <option value="Zwolseweg">Zwolseweg</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Huisnummer <span class="required">*</span></label>
+              <input type="text" name="huisnummer" placeholder="12" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label>Telefoonnummer <span class="required">*</span></label>
+            <input type="tel" name="telefoon" placeholder="06-12345678" required>
+          </div>
+
+          <div class="form-row">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="uw@email.nl">
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-row">
+              <label>Aantal dozen <span class="required">*</span></label>
+              <input type="number" name="aantal_dozen" min="1" max="10" value="1" required>
+            </div>
+            <div class="form-row">
+              <label>Frequentie <span class="required">*</span></label>
+              <select name="frequentie" required>
+                <option value="wekelijks">Elke week</option>
+                <option value="2wekelijks">Elke 2 weken</option>
+                <option value="3wekelijks">Elke 3 weken</option>
+                <option value="eenmalig">Eenmalig</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">Inschrijven</button>
+        </form>
+
+        <div class="register-info">
+          <strong>Hoe werkt het?</strong><br>
+          1. Vul het formulier in<br>
+          2. Julian neemt contact met je op<br>
+          3. Je eerste levering volgt snel<br>
+          <br>
+          Vragen? Bel of app: 06-19 52 83 77
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="public-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">Julian's Verse Eitjes</div>
+    <div class="footer-item">📍 Zwolse Wijk</div>
+    <div class="footer-item">🌐 eitjes.kunkeler.net</div>
+    <div class="footer-item"><a href="https://www.EaglesEyePodcast.nl">🎙 EaglesEyePodcast.nl</a></div>
+    <div class="footer-item">📱 06-19 52 83 77</div>
   </div>
+</footer>
 </div>
 
 <script>
+if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {threshold: 0.12});
+    document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+} else {
+    document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+}
+
 document.getElementById('registerForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 

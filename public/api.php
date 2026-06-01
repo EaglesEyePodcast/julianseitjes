@@ -308,16 +308,19 @@ function standaardStraten() {
     return array(
         '1e Weerdsweg',
         '2e Weerdsweg',
+        'Alexander Hegiusstraat',
         'Anna Reynvaanstraat',
         'Borgerlerstraat',
+        'Florens Radewijnszstraat',
         'Hallensstraat',
         'Jacob van Bredastraat',
-        'J.P. Sweelinckstraat',
+        'JP Sweelinckstraat',
         'Johannes Sinthenstraat',
         'Kromme Kerkstraat',
         'Radstakeweg',
         'Reinckenstraat',
         'Richard Paffraedstraat',
+        'Sallandstraat',
         'Sint Jurrienstraat',
         'Zwolseweg'
     );
@@ -326,6 +329,7 @@ function standaardStraten() {
 function normaliseerStraat($straat) {
     $straat = trim(strtolower($straat));
     $straat = str_replace(array('ë', 'é', 'è'), 'e', $straat);
+    $straat = str_replace('.', '', $straat);
     $straat = preg_replace('/\s+/', ' ', $straat);
     $straat = str_replace('weerdswef', 'weerdsweg', $straat);
     return $straat;

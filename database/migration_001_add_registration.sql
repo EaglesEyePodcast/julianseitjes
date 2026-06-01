@@ -13,16 +13,19 @@ CREATE TABLE `straten` (
 INSERT INTO `straten` (`naam`, `actief`) VALUES
 ('1e Weerdsweg', 1),
 ('2e Weerdsweg', 1),
+('Alexander Hegiusstraat', 1),
 ('Anna Reynvaanstraat', 1),
 ('Borgerlerstraat', 1),
+('Florens Radewijnszstraat', 1),
 ('Hallensstraat', 1),
 ('Jacob van Bredastraat', 1),
-('J.P. Sweelinckstraat', 1),
+('JP Sweelinckstraat', 1),
 ('Johannes Sinthenstraat', 1),
 ('Kromme Kerkstraat', 1),
 ('Radstakeweg', 1),
 ('Reinckenstraat', 1),
 ('Richard Paffraedstraat', 1),
+('Sallandstraat', 1),
 ('Sint Jurrienstraat', 1),
 ('Zwolseweg', 1);
 

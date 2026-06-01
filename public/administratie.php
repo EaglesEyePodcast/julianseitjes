@@ -207,16 +207,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
             <option value="">-- Kies uw straat --</option>
             <option value="1e Weerdsweg">1e Weerdsweg</option>
             <option value="2e Weerdsweg">2e Weerdsweg</option>
+            <option value="Alexander Hegiusstraat">Alexander Hegiusstraat</option>
             <option value="Anna Reynvaanstraat">Anna Reynvaanstraat</option>
             <option value="Borgerlerstraat">Borgerlerstraat</option>
+            <option value="Florens Radewijnszstraat">Florens Radewijnszstraat</option>
             <option value="Hallensstraat">Hallensstraat</option>
             <option value="Jacob van Bredastraat">Jacob van Bredastraat</option>
-            <option value="J.P. Sweelinckstraat">J.P. Sweelinckstraat</option>
+            <option value="JP Sweelinckstraat">JP Sweelinckstraat</option>
             <option value="Johannes Sinthenstraat">Johannes Sinthenstraat</option>
             <option value="Kromme Kerkstraat">Kromme Kerkstraat</option>
             <option value="Radstakeweg">Radstakeweg</option>
             <option value="Reinckenstraat">Reinckenstraat</option>
             <option value="Richard Paffraedstraat">Richard Paffraedstraat</option>
+            <option value="Sallandstraat">Sallandstraat</option>
             <option value="Sint Jurrienstraat">Sint Jurrienstraat</option>
             <option value="Zwolseweg">Zwolseweg</option>
           </select>
